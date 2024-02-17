@@ -28,10 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import static java.lang.Boolean.TRUE;
 import static org.testng.internal.Utils.isStringNotBlank;
@@ -112,8 +109,8 @@ public class TestNGAntTask extends Task {
   protected File m_testjar;
   protected File m_workingDir;
   private Integer m_timeout;
-  private List<String> m_listeners = Lists.newArrayList();
-  private List<String> m_methodselectors = Lists.newArrayList();
+  private final List<String> m_listeners = Lists.newArrayList();
+  private final List<String> m_methodselectors = Lists.newArrayList();
   private String m_objectFactory;
   protected String m_testRunnerFactory;
   private boolean m_delegateCommandSystemProperties = false;
@@ -166,7 +163,7 @@ public class TestNGAntTask extends Task {
   private static final Logger LOGGER = Logger.getLogger(TestNGAntTask.class);
 
   /** The list of report listeners added via &lt;reporter&gt; sub-element of the Ant task */
-  private List<AntReporterConfig> reporterConfigs = Lists.newArrayList();
+  private final List<AntReporterConfig> reporterConfigs = Lists.newArrayList();
 
   private String m_testNames = "";
 
@@ -579,6 +576,14 @@ public class TestNGAntTask extends Task {
     addReporterConfigs(argv);
     addIntegerIfNotNull(argv, CommandLineArgs.SUITE_THREAD_POOL_SIZE, m_suiteThreadPoolSize);
     addStringIfNotNull(argv, CommandLineArgs.XML_PATH_IN_JAR, m_xmlPathInJar);
+    switch (mode) {
+      case junit:
+        addBooleanIfTrue(argv, CommandLineArgs.JUNIT, TRUE);
+        break;
+      case mixed:
+        addBooleanIfTrue(argv, CommandLineArgs.MIXED, TRUE);
+        break;
+    }
     addXmlFiles(argv);
     return argv;
   }
@@ -680,9 +685,9 @@ public class TestNGAntTask extends Task {
   private void delegateCommandSystemProperties() {
     // Iterate over command-line args and pass them through as sysproperty
     // exclude any built-in properties that start with "ant."
-    for (Object propKey : getProject().getUserProperties().keySet()) {
-      String propName = (String) propKey;
-      String propVal = getProject().getUserProperty(propName);
+    for (Map.Entry<String, Object> propEntry : getProject().getUserProperties().entrySet()) {
+      String propName = propEntry.getKey();
+      String propVal = (String) propEntry.getValue();
       if (propName.startsWith("ant.")) {
         log("Excluding ant property: " + propName + ": " + propVal, Project.MSG_DEBUG);
       } else {
@@ -699,7 +704,7 @@ public class TestNGAntTask extends Task {
     if (m_dumpSys) {
       debug("* SYSTEM PROPERTIES *");
       Properties props = System.getProperties();
-      Enumeration en = props.propertyNames();
+      Enumeration<?> en = props.propertyNames();
       while (en.hasMoreElements()) {
         String key = (String) en.nextElement();
         debug(key + ": " + props.getProperty(key));
@@ -868,13 +873,13 @@ public class TestNGAntTask extends Task {
   protected void validateOptions() throws BuildException {
     int suiteCount = getSuiteFileNames().size();
     if (suiteCount == 0
-        && m_classFilesets.size() == 0
+        && m_classFilesets.isEmpty()
         && Utils.isStringEmpty(m_methods)
         && ((null == m_testjar) || !m_testjar.isFile())) {
       throw new BuildException("No suites, classes, methods or jar file was specified.");
     }
 
-    if ((null != m_includedGroups) && (m_classFilesets.size() == 0 && suiteCount == 0)) {
+    if ((null != m_includedGroups) && (m_classFilesets.isEmpty() && suiteCount == 0)) {
       throw new BuildException("No class filesets or xml file sets specified while using groups");
     }
 
@@ -907,7 +912,7 @@ public class TestNGAntTask extends Task {
   }
 
   private File findJar() {
-    Class thisClass = getClass();
+    Class<?> thisClass = getClass();
     String resource = thisClass.getName().replace('.', '/') + ".class";
     URL url = thisClass.getClassLoader().getResource(resource);
 
@@ -985,7 +990,7 @@ public class TestNGAntTask extends Task {
    *
    * @param resources - A list of {@link ResourceCollection}
    * @return the list of files corresponding to the resource collection
-   * @throws BuildException
+   * @throws BuildException if the resource collection is not a file resource
    */
   private List<String> getFiles(List<ResourceCollection> resources) throws BuildException {
     List<String> files = Lists.newArrayList();
@@ -1069,8 +1074,8 @@ public class TestNGAntTask extends Task {
 
   private static class TestNGLogOS extends LogOutputStream {
 
-    private Task task;
-    private boolean verbose;
+    private final Task task;
+    private final boolean verbose;
 
     public TestNGLogOS(Task task, int level, boolean verbose) {
       super(task, level);
