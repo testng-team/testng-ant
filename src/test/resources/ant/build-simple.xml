@@ -1,0 +1,13 @@
+<project name="MyProject" default="testng" basedir=".">
+
+    <taskdef name="testng" classname="org.testng.TestNGAntTask" classpath="target/classes" />
+
+    <target name="testng">
+        <testng>
+            <classpath>
+                <pathelement path="${java.class.path}"/>
+            </classpath>
+            <classfileset dir="target/test-classes" includes="**/ant/SimpleSample.class"/>
+        </testng>
+    </target>
+</project>
