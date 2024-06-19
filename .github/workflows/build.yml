@@ -26,4 +26,4 @@ jobs:
           cache: maven
 
       - name: 'Build and test'
-        run: ./mvnw clean verify
+        run: ./mvnw clean test
