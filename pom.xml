@@ -18,6 +18,54 @@
         <ant.version>1.10.12</ant.version>
     </properties>
 
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>cbeust</id>
+            <name>Cedric Beust</name>
+            <email>cedric@beust.com</email>
+        </developer>
+        <developer>
+            <id>juherr</id>
+            <name>Julien Herr</name>
+            <email>julien@herr.fr</email>
+        </developer>
+        <developer>
+            <id>krmahadevan</id>
+            <name>Krishnan Mahadevan</name>
+            <email>krishnan.mahadevan1978@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:testng-team/testng-ant.git</connection>
+        <developerConnection>scm:git:git@github.com:testng-team/testng-ant.git</developerConnection>
+        <url>https://github.com/testng-team/testng-ant</url>
+    </scm>
+
+    <issueManagement>
+        <url>https://github.com/testng-team/testng-ant/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.ant</groupId>
