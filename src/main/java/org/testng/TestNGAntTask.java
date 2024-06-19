@@ -149,7 +149,6 @@ public class TestNGAntTask extends Task {
   private String m_testName = "Ant test";
   private Boolean m_skipFailedInvocationCounts;
   private String m_methods;
-  private Mode mode = Mode.testng;
   private boolean forkJvm = true;
   private boolean m_ignoreMissedTestNames;
 
@@ -382,14 +381,16 @@ public class TestNGAntTask extends Task {
     m_testName = s;
   }
 
+  @Deprecated
   // TestNG settings
   public void setJUnit(boolean value) {
-    mode = value ? Mode.junit : Mode.testng;
+    //No Op
   }
 
+  @Deprecated
   // TestNG settings
   public void setMode(Mode mode) {
-    this.mode = mode;
+    //No Op
   }
 
   public void setForkJvm(boolean forkJvm) {
@@ -576,14 +577,6 @@ public class TestNGAntTask extends Task {
     addReporterConfigs(argv);
     addIntegerIfNotNull(argv, CommandLineArgs.SUITE_THREAD_POOL_SIZE, m_suiteThreadPoolSize);
     addStringIfNotNull(argv, CommandLineArgs.XML_PATH_IN_JAR, m_xmlPathInJar);
-    switch (mode) {
-      case junit:
-        addBooleanIfTrue(argv, CommandLineArgs.JUNIT, TRUE);
-        break;
-      case mixed:
-        addBooleanIfTrue(argv, CommandLineArgs.MIXED, TRUE);
-        break;
-    }
     addXmlFiles(argv);
     return argv;
   }
