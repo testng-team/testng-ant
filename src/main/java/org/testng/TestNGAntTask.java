@@ -145,8 +145,8 @@ public class TestNGAntTask extends Task {
   protected String m_configFailurePolicy;
   protected Boolean m_randomizeSuites;
   public String m_useDefaultListeners;
-  private String m_suiteName = "Ant suite";
-  private String m_testName = "Ant test";
+  private String m_suiteName = "Ant-suite";
+  private String m_testName = "Ant-test";
   private Boolean m_skipFailedInvocationCounts;
   private String m_methods;
   private boolean forkJvm = true;
